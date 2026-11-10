@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { Logo } from "@/components/brand/Logo";
+import { FLAGS } from "@/config/flags";
 import { LiveTransferCard } from "./LiveTransferCard";
 
 export function HeroVisual() {
@@ -34,9 +35,12 @@ export function HeroVisual() {
         </motion.div>
       </div>
 
-      <div className="relative z-10 -mt-16 w-full max-w-[300px] self-center md:-mt-24 lg:self-start">
-        <LiveTransferCard />
-      </div>
+      {/* Rendered only when FLAGS.liveTransferCard is on — wire to the pool indexer first. */}
+      {FLAGS.liveTransferCard && (
+        <div className="relative z-10 -mt-16 w-full max-w-[300px] self-center md:-mt-24 lg:self-start">
+          <LiveTransferCard />
+        </div>
+      )}
     </div>
   );
 }

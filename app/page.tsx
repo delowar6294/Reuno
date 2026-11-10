@@ -17,12 +17,15 @@ import { StatsBand } from "@/components/home/StatsBand";
 import { PricingTeaser } from "@/components/home/PricingTeaser";
 import { Faq } from "@/components/home/Faq";
 import { FinalCta } from "@/components/home/FinalCta";
+import { FLAGS } from "@/config/flags";
+
+export const revalidate = 3600;
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <RecentTransfers />
+      {FLAGS.recentTransfers && <RecentTransfers />}
       <LayerOrbit />
       <PrivateTrace />
       <TorSession />

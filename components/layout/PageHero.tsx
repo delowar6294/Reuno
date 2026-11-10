@@ -38,9 +38,12 @@ export function PageHero({
   );
 
   return (
-    <section className="relative overflow-hidden bg-bg-0 pb-14 pt-28 md:pb-20 md:pt-36">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-grad-glow" />
-      {aside && <div aria-hidden="true" className="grid-texture pointer-events-none absolute inset-0" />}
+    <section className={cn("relative bg-bg-0 pt-28 md:pt-36", aside ? "pb-20" : "pb-14 md:pb-20")}>
+      {/* Only the background layer clips, so foreground cards are never cut off. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-grad-glow" />
+        {aside && <div className="grid-texture absolute inset-0" />}
+      </div>
       <Container className="relative">
         {aside ? (
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-8">

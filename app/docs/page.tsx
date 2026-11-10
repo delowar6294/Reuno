@@ -50,7 +50,7 @@ export default function DocsPage() {
       <PageHero eyebrow="docs" title="Documentation" sub="Everything you need to plug Reuno into an app or an agent." />
       <section className="bg-bg-1 py-12 md:py-16">
         <Container>
-          <Banner className="mb-10">Draft docs — sections marked TODO are placeholders. Endpoints shown are examples.</Banner>
+          <Banner className="mb-10">Draft docs — sections marked TODO are still being written. The Reuno API and MCP endpoints go live at launch.</Banner>
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-[220px_1fr] lg:gap-16">
             <div>
               <DocsNav sections={SECTIONS} />
@@ -58,7 +58,7 @@ export default function DocsPage() {
             <div className="flex min-w-0 max-w-[760px] flex-col gap-12">
               <DocSectionBlock id="quickstart" title="Quickstart">
                 <p>Get a trial key, then call any model through the OpenAI-compatible endpoint.</p>
-                <CodeBlock code={REST_SNIPPET} label="example endpoint" />
+                <CodeBlock code={REST_SNIPPET} label="available at launch" />
                 <Todo>authentication, rate limits and error codes</Todo>
               </DocSectionBlock>
               <DocSectionBlock id="api" title="API">
@@ -70,7 +70,7 @@ export default function DocsPage() {
               </DocSectionBlock>
               <DocSectionBlock id="mcp" title="MCP">
                 <p>Add the Reuno MCP server to any client that supports remote MCP.</p>
-                <CodeBlock code={MCP_CONFIG} label="mcp config · example" />
+                <CodeBlock code={MCP_CONFIG} label="mcp config · available at launch" />
                 <Todo>client-specific setup guides</Todo>
               </DocSectionBlock>
               <DocSectionBlock id="tools" title="Tools reference">

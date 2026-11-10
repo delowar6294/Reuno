@@ -4,7 +4,8 @@ import { Check, Copy } from "lucide-react";
 import { useState } from "react";
 import { Table, type Column } from "@/components/ui/Table";
 import { LetterAvatar } from "@/components/ui/LetterAvatar";
-import type { Model } from "@/data/models";
+import type { CatalogModel as Model } from "@/lib/server/catalog-types";
+import { formatPerMillion } from "@/lib/format";
 
 function CopyId({ id }: { id: string }) {
   const [done, setDone] = useState(false);
@@ -44,14 +45,14 @@ const COLUMNS: Column<Model>[] = [
     header: "model",
     cell: (m) => (
       <span className="inline-flex items-center gap-3 text-ink-1">
-        <LetterAvatar text={m.provider} />
+        <LetterAvatar text={m.provider.toUpperCase()} />
         {m.name}
       </span>
     ),
   },
   { key: "id", header: "model id", cell: (m) => <CopyId id={m.id} /> },
-  { key: "in", header: "input / 1m", align: "right", cell: (m) => <span className="mono-num">{m.input}</span> },
-  { key: "out", header: "output / 1m", align: "right", cell: (m) => <span className="mono-num">{m.output}</span> },
+  { key: "in", header: "input / 1m", align: "right", cell: (m) => <span className="mono-num">{formatPerMillion(m.input)}</span> },
+  { key: "out", header: "output / 1m", align: "right", cell: (m) => <span className="mono-num">{formatPerMillion(m.output)}</span> },
 ];
 
 export function ModelsTableView({ rows, className }: { rows: Model[]; className?: string }) {

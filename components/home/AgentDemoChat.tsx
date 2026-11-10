@@ -61,13 +61,13 @@ export function AgentDemoChat() {
     <div ref={ref}>
       <div className="card p-5 md:p-6">
         <CardHeader
-          left="agent session · demo"
+          left="agent session · example"
           right={
             <button
               type="button"
               onClick={() => setRun((r) => r + 1)}
               className="inline-flex h-8 items-center gap-1.5 rounded-sm px-2 text-xs text-ink-3 transition-colors duration-[180ms] hover:bg-surface-2 hover:text-ink-1"
-              aria-label="Replay demo"
+              aria-label="Replay example"
             >
               <RotateCcw className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
               replay
@@ -105,7 +105,7 @@ export function AgentDemoChat() {
                 <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-1.5 font-mono text-xs">
                   {[
                     ["side", "buy"],
-                    ["token", "0x…demo"],
+                    ["token", "0x322F…3b2d"],
                     ["chain_id", "4663"],
                     ["route", "LI.FI → 5 layers"],
                   ].map(([k, v]) => (
@@ -115,7 +115,7 @@ export function AgentDemoChat() {
                     </div>
                   ))}
                 </dl>
-                <Tooltip content="demo" className="mt-4">
+                <Tooltip content="example only" className="mt-4">
                   <Button size="sm" disabled>
                     Approve
                   </Button>
@@ -135,7 +135,7 @@ export function AgentDemoChat() {
         </div>
       </div>
       <p className="mt-3 text-xs text-ink-3">
-        demo — trades are built by Reuno and signed by your agent&apos;s own wallet.
+        Example conversation — trades are built by Reuno and signed by your agent&apos;s own wallet.
       </p>
     </div>
   );

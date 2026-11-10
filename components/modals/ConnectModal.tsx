@@ -4,7 +4,8 @@ import { AlertTriangle } from "lucide-react";
 import { useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Tabs, TabPanel } from "@/components/ui/Tabs";
-import { Button } from "@/components/ui/Button";
+import { Banner } from "@/components/ui/Banner";
+import { FLAGS } from "@/config/flags";
 import { CopyField } from "@/components/ui/CopyField";
 
 const TABS = [
@@ -31,19 +32,10 @@ const STEPS: Record<string, string[]> = {
   ],
 };
 
-/** Demo only: random string generated in the browser, never sent anywhere. */
-function makeTrialKey(): string {
-  const bytes = new Uint8Array(12);
-  crypto.getRandomValues(bytes);
-  const body = Array.from(bytes, (b) => b.toString(36).padStart(2, "0")).join("").slice(0, 20);
-  return `rn_trial_${body}`;
-}
-
 export function ConnectModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [tab, setTab] = useState("claude");
-  const [key, setKey] = useState<string | null>(null);
-
-  const mcpUrl = `https://mcp.reuno.xyz/v1?key=${key ?? "…"}`;
+  // Keys are issued by the Reuno API. Until it is live (FLAGS.agentKeys) no key is shown or generated.
+  const mcpUrl = "https://mcp.reuno.xyz/v1?key=YOUR_KEY";
 
   return (
     <Modal open={open} onClose={onClose} title="Get an agent key">
@@ -51,19 +43,16 @@ export function ConnectModal({ open, onClose }: { open: boolean; onClose: () => 
 
       <div className="mt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3">
-          <span className="text-mono-label text-ink-3">step 1 · trial key · demo</span>
-          {key ? (
-            <>
-              <CopyField value={key} label="your key" />
-              <p className="flex items-start gap-2 text-sm text-warn">
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                <span>Your key works like a password. Don&apos;t share it.</span>
-              </p>
-            </>
+          <span className="text-mono-label text-ink-3">step 1 · your key</span>
+          {FLAGS.agentKeys ? (
+            <p className="flex items-start gap-2 text-sm text-warn">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+              <span>Your key works like a password. Don&apos;t share it.</span>
+            </p>
           ) : (
-            <Button onClick={() => setKey(makeTrialKey())} className="self-start">
-              Generate trial key
-            </Button>
+            <Banner tone="info">
+              Agent keys open when the Reuno API launches. Below is exactly how you&apos;ll connect once you have one.
+            </Banner>
           )}
         </div>
 
@@ -81,7 +70,7 @@ export function ConnectModal({ open, onClose }: { open: boolean; onClose: () => 
                   </li>
                 ))}
               </ol>
-              <CopyField value={mcpUrl} label="mcp url" note="example" max={40} />
+              <CopyField value={mcpUrl} label="mcp url" note="available at launch" max={40} />
             </div>
           </TabPanel>
         ))}

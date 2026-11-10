@@ -5,22 +5,25 @@ import { Banner } from "@/components/ui/Banner";
 import { Button } from "@/components/ui/Button";
 import { ModalButton } from "@/components/modals/ModalButton";
 import { StocksGrid } from "@/components/pages/StocksGrid";
-import { StocksHeroVisual } from "@/components/pages/StocksHeroVisual";
-import { STOCK_FACTS, US_PERSONS_NOTICE } from "@/data/stocks";
+import { LiveQuoteCard } from "@/components/stocks/LiveQuoteCard";
+import { LiveStats } from "@/components/stocks/LiveStats";
+import { Web3Provider } from "@/components/providers/Web3Provider";
+import { US_PERSONS_NOTICE } from "@/data/stocks";
 
 export const metadata: Metadata = {
   title: "Stocks",
-  description: "Stock tokens and ETFs on Robinhood Chain that Reuno agents can quote, buy, sell and privately transfer.",
+  description:
+    "Live Robinhood Stock Token prices on Robinhood Chain. Quote, buy and sell from your own wallet, or from your agent.",
 };
 
 export default function StocksPage() {
   return (
-    <>
+    <Web3Provider>
       <PageHero
         eyebrow="stock tokens · robinhood chain"
         title="Stock tokens"
         sub="Quote, buy, sell and privately transfer stock tokens and ETFs on Robinhood Chain, from the app or from your agent."
-        aside={<StocksHeroVisual />}
+        aside={<LiveQuoteCard />}
       >
         <div className="flex flex-col gap-8">
           <div className="flex flex-wrap items-center gap-3">
@@ -31,24 +34,13 @@ export default function StocksPage() {
               Trade from an agent
             </ModalButton>
           </div>
-
-          <dl className="grid max-w-[560px] grid-cols-3 gap-4 border-y border-line-1 py-5">
-            {STOCK_FACTS.map((f) => (
-              <div key={f.label} className="flex flex-col gap-1">
-                <dt className="text-mono-label order-2 text-ink-3">{f.label}</dt>
-                <dd className="mono-num text-grad-silver order-1 text-[28px] leading-none md:text-[32px]">
-                  {f.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-
+          <LiveStats />
           <Banner className="max-w-[640px]">{US_PERSONS_NOTICE}</Banner>
         </div>
       </PageHero>
       <Section tone="even" className="pt-12 md:pt-16">
         <StocksGrid />
       </Section>
-    </>
+    </Web3Provider>
   );
 }

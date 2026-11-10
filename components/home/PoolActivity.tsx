@@ -8,6 +8,7 @@ import { StatusDot } from "@/components/ui/StatusDot";
 import { DAYS, HEATMAP, POOL_STATS } from "@/data/poolActivity";
 import { formatClock } from "@/lib/format";
 import { cn } from "@/lib/cn";
+import { FLAGS } from "@/config/flags";
 
 const STEPS = ["bg-surface-3", "bg-brand-900", "bg-brand-700", "bg-brand-500", "bg-brand-300"];
 
@@ -20,7 +21,39 @@ function useCountdown(start: number) {
   return left;
 }
 
+/** Static explanation (no numbers) until the pool and relayers are live. */
+function PoolActivityStatic() {
+  const items = [
+    { k: "batches", v: "Shards leave the pool together on a fixed rhythm, never one at a time." },
+    { k: "full stack", v: "Each transfer's trace shows whether all five layers ran." },
+    { k: "relayers", v: "Independent relayers in different regions pay gas and fire delayed exits." },
+  ];
+  return (
+    <Section tone="odd" labelledBy="pool-title">
+      <SectionHeading
+        id="pool-title"
+        eyebrow="a day inside the pool"
+        title="Deposits mixing, relayers online."
+        sub="Live pool activity, relayer status and batch timing appear here when the Reuno pool launches."
+      />
+      <ul className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {items.map((i) => (
+          <li key={i.k} className="card p-5 md:p-6">
+            <CardHeader left={i.k} right={<StatusDot tone="brand" pulse={false} />} />
+            <p className="mt-3 text-sm text-ink-2">{i.v}</p>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  );
+}
+
 export function PoolActivity() {
+  return FLAGS.poolActivity ? <PoolActivityLive /> : <PoolActivityStatic />;
+}
+
+/** Rendered only when FLAGS.poolActivity is on — wire to the pool + relayer APIs first. */
+function PoolActivityLive() {
   const left = useCountdown(POOL_STATS.nextBatchSeconds);
 
   return (

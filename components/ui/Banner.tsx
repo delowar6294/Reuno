@@ -1,4 +1,4 @@
-import { AlertTriangle, Info } from "lucide-react";
+import { Info, TriangleAlert } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 export function Banner({
@@ -10,13 +10,13 @@ export function Banner({
   children: React.ReactNode;
   className?: string;
 }) {
-  const Icon = tone === "warn" ? AlertTriangle : Info;
+  const Icon = tone === "warn" ? TriangleAlert : Info;
   return (
     <div
       role="note"
       className={cn(
-        "flex items-start gap-3 rounded-md border bg-surface-1 px-4 py-3 text-sm",
-        tone === "warn" ? "border-line-2 text-ink-1" : "border-line-1 text-ink-2",
+        "flex items-start gap-3 rounded-lg border bg-surface-1 px-4 py-3 text-sm text-ink-2",
+        tone === "warn" ? "border-line-2" : "border-line-1",
         className,
       )}
     >

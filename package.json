@@ -10,13 +10,21 @@
     "icons": "node scripts/generate-icons.mjs"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.107.1",
+    "@wagmi/connectors": "^6.2.0",
+    "@wagmi/core": "^2.22.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.43.0",
     "lucide-react": "^1.71.0",
     "next": "^15.5.29",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "tailwind-merge": "^3.7.0"
+    "server-only": "^0.0.1",
+    "swr": "^2.5.1",
+    "tailwind-merge": "^3.7.0",
+    "viem": "^2.57.17",
+    "wagmi": "^2.19.5",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",

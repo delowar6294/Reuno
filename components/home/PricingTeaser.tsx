@@ -25,11 +25,11 @@ export function PricingCards() {
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
       <Card className="flex flex-col gap-4">
-        <CardHeader left="free tier" right={<Pill dot="ok">no sign-in</Pill>} />
-        <h3 className="text-h3 text-ink-1">Try it now</h3>
+        <CardHeader left="free tier" right={<Pill dot="brand">at launch</Pill>} />
+        <h3 className="text-h3 text-ink-1">Free daily allowance</h3>
         <p className="text-ink-2">A free daily allowance for low-cost models. No wallet needed.</p>
         <div className="mt-auto pt-4">
-          <ModalButton modal="connect">Get a trial key</ModalButton>
+          <ModalButton modal="connect">How to connect</ModalButton>
         </div>
       </Card>
       <Card className="flex flex-col gap-4">

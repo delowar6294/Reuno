@@ -69,7 +69,7 @@ export default function AgentsPage() {
           title="Any OpenAI SDK works."
           sub="Change the base URL and the key. Switch models by changing one ID."
         />
-        <CodeBlock className="mt-10" code={REST_SNIPPET} label="example endpoint" />
+        <CodeBlock className="mt-10" code={REST_SNIPPET} label="available at launch" />
       </Section>
     </>
   );

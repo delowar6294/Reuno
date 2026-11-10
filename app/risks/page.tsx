@@ -28,7 +28,7 @@ export default function RisksPage() {
         {
           heading: "Privacy is not absolute",
           body: [
-            "The privacy layers reduce the odds of tracing a transfer; they do not make it impossible. Figures shown on this site are design targets until measured and published after audit.",
+            "The privacy layers reduce the odds of tracing a transfer; they do not make it impossible. Traceability figures will be published only after they have been measured and audited.",
           ],
         },
         {

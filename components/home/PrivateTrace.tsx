@@ -8,8 +8,56 @@ import { Pill } from "@/components/ui/Pill";
 import { RollingDigits } from "@/components/ui/RollingDigits";
 import { TRACE_DEMO } from "@/data/layers";
 import { EASE } from "@/lib/motion";
+import { FLAGS } from "@/config/flags";
+
+const TRACE_STAGES = [
+  { name: "fresh vault", what: "when your deposit landed in a single-use wallet" },
+  { name: "shard split", what: "how many shards your amount became" },
+  { name: "batch + zk pool", what: "how long the shards waited with everyone else's" },
+  { name: "relay exit", what: "when the relayer's delayed payout fires" },
+];
+
+/** Static explanation shown until the pool indexer is live (no numbers). */
+function PrivateTraceStatic() {
+  return (
+    <Section tone="odd" labelledBy="trace-title">
+      <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
+        <div className="lg:col-span-5">
+          <SectionHeading
+            id="trace-title"
+            eyebrow="your private trace"
+            title="See every layer do its job."
+            sub="Each transfer keeps a trace only you can open: which layers ran, how long each took and when the exit fires."
+          />
+        </div>
+        <div className="card p-5 md:p-6 lg:col-span-7">
+          <CardHeader left="what your trace records" right={<Pill dot="brand">opens with the pool</Pill>} />
+          <ol className="mt-6 flex flex-col gap-4">
+            {TRACE_STAGES.map((s, i) => (
+              <li key={s.name} className="grid grid-cols-[28px_1fr] items-start gap-4">
+                <span className="mono-num flex h-7 w-7 items-center justify-center rounded-full border border-line-2 text-xs text-brand-200">
+                  {i + 1}
+                </span>
+                <div className="flex flex-col gap-1.5">
+                  <span className="text-sm text-ink-1">{s.name}</span>
+                  <span className="text-sm text-ink-2">{s.what}</span>
+                  <span aria-hidden="true" className="mt-1 block h-2 w-full rounded-full bg-surface-3" />
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </Section>
+  );
+}
 
 export function PrivateTrace() {
+  return FLAGS.traceTimeline ? <PrivateTraceTimeline /> : <PrivateTraceStatic />;
+}
+
+/** Live timeline. Rendered only when FLAGS.traceTimeline is on — wire to the pool indexer first. */
+function PrivateTraceTimeline() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
   const reduce = useReducedMotion();

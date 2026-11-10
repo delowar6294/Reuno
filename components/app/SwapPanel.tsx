@@ -1,71 +1,57 @@
 "use client";
 
-import { ArrowDownUp } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { Divider } from "@/components/ui/Card";
-import { Tooltip } from "@/components/ui/Tooltip";
-import { STOCKS } from "@/data/stocks";
-import type { Layer } from "@/data/layers";
-import { Field, SummaryRow, TokenSelect, inputClass } from "./fields";
-import { LayerToggle } from "./LayerToggle";
-
-const TOKENS = ["ETH", "USDG", ...STOCKS.map((s) => s.ticker)];
+import { TradePanel } from "@/components/trade/TradePanel";
+import { STOCK_TOKENS } from "@/config/tokens";
+import type { TradeSide } from "@/lib/market-types";
+import { formatPct, formatUsd } from "@/lib/format";
+import { usePrices } from "@/lib/use-market";
+import { cn } from "@/lib/cn";
+import { Field, TokenSelect } from "./fields";
 
 export function SwapPanel() {
-  const [from, setFrom] = useState("ETH");
-  const [to, setTo] = useState("USDG");
-  const [amount, setAmount] = useState("");
-  const [layers, setLayers] = useState<Layer["n"][]>([1, 2, 3, 4, 5]);
+  const [ticker, setTicker] = useState(STOCK_TOKENS[0].ticker);
+  const [side, setSide] = useState<TradeSide>("buy");
+  const [amount, setAmount] = useState("50");
+  const { data } = usePrices();
+  const live = data?.prices.find((p) => p.ticker === ticker);
 
   return (
-    <form className="flex flex-col gap-6" onSubmit={(e) => e.preventDefault()} aria-label="Swap">
-      <div className="grid grid-cols-1 items-end gap-3 sm:grid-cols-[1fr_auto_1fr]">
-        <Field label="from" htmlFor="swap-from">
-          <TokenSelect id="swap-from" value={from} onChange={setFrom} options={TOKENS} />
-        </Field>
-        <button
-          type="button"
-          onClick={() => {
-            setFrom(to);
-            setTo(from);
+    <div className="flex flex-col gap-6">
+      <Field label="stock token" htmlFor="swap-token" hint={side === "buy" ? "Paid with ETH from your wallet." : "Sold for ETH to your wallet."}>
+        <TokenSelect
+          id="swap-token"
+          value={ticker}
+          onChange={(t) => {
+            setTicker(t);
+            setAmount("50");
           }}
-          className="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full border border-line-2 text-ink-2 transition-colors duration-[180ms] hover:bg-surface-2 hover:text-ink-1"
-          aria-label="Swap direction"
-        >
-          <ArrowDownUp className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-        </button>
-        <Field label="to" htmlFor="swap-to">
-          <TokenSelect id="swap-to" value={to} onChange={setTo} options={TOKENS} />
-        </Field>
-      </div>
-
-      <Field label="amount" htmlFor="swap-amount">
-        <input
-          id="swap-amount"
-          inputMode="decimal"
-          autoComplete="off"
-          placeholder="0.00"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
-          className={`${inputClass} mono-num text-lg`}
+          options={STOCK_TOKENS.map((t) => t.ticker)}
         />
       </Field>
 
-      <LayerToggle enabled={layers} onChange={setLayers} />
-
-      <Divider />
-      <div className="flex flex-col gap-2.5">
-        <SummaryRow k="layers on" v={`${layers.length} / 5`} />
-        <SummaryRow k="estimated time" v="~14 min" />
-        <SummaryRow k="fees" v="network + relayer fees shown before signing" />
+      <div className="flex items-center justify-between rounded-sm border border-line-1 bg-surface-1 px-4 py-3 text-sm">
+        <span className="text-ink-3">live price</span>
+        {live ? (
+          <span className="mono-num flex items-center gap-3 text-ink-1">
+            {formatUsd(live.priceUsd)}
+            <span className={cn("text-xs", live.changePct24h > 0 ? "text-ok" : live.changePct24h < 0 ? "text-bad" : "text-ink-3")}>
+              {live.changePct24h > 0 ? "▲" : live.changePct24h < 0 ? "▼" : ""} {formatPct(live.changePct24h)}
+            </span>
+          </span>
+        ) : (
+          <span className="block h-3 w-20 rounded-sm bg-surface-3 motion-safe:animate-pulse" aria-label="Loading" />
+        )}
       </div>
 
-      <Tooltip content="coming soon" className="w-full">
-        <Button size="lg" disabled className="w-full">
-          Connect wallet
-        </Button>
-      </Tooltip>
-    </form>
+      <TradePanel
+        key={ticker}
+        ticker={ticker}
+        side={side}
+        onSideChange={setSide}
+        amount={amount}
+        onAmountChange={setAmount}
+      />
+    </div>
   );
 }
