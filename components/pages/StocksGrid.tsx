@@ -10,6 +10,7 @@ import { STOCK_TOKENS } from "@/config/tokens";
 import { explorerTokenUrl } from "@/config/chain";
 import { formatCompactUsd, formatPct, formatUsd, shortAddress } from "@/lib/format";
 import { usePrices } from "@/lib/use-market";
+import { AddTokenButton } from "@/components/wallet/AddTokenButton";
 import { cn } from "@/lib/cn";
 
 const FILTERS = [
@@ -89,6 +90,7 @@ export function StocksGrid() {
                     >
                       {shortAddress(s.address)}
                     </a>
+                    <AddTokenButton address={s.address} symbol={s.ticker} className="ml-auto" />
                     {p && (
                       <a
                         href={p.poolUrl}

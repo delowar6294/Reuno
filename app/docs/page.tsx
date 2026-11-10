@@ -3,6 +3,8 @@ import { PageHero } from "@/components/layout/PageHero";
 import { Container } from "@/components/layout/Container";
 import { CodeBlock } from "@/components/ui/CodeBlock";
 import { Banner } from "@/components/ui/Banner";
+import { AddChainButton } from "@/components/wallet/AddChainButton";
+import { CHAIN } from "@/config/chain";
 import { DocsNav, type DocSection } from "@/components/pages/DocsLayout";
 import { LAYERS } from "@/data/layers";
 import { REST_SNIPPET, TOOLS } from "@/data/tools";
@@ -13,6 +15,7 @@ export const metadata: Metadata = {
 };
 
 const SECTIONS: DocSection[] = [
+  { id: "wallet", title: "Wallet" },
   { id: "quickstart", title: "Quickstart" },
   { id: "api", title: "API" },
   { id: "mcp", title: "MCP" },
@@ -56,6 +59,20 @@ export default function DocsPage() {
               <DocsNav sections={SECTIONS} />
             </div>
             <div className="flex min-w-0 max-w-[760px] flex-col gap-12">
+              <DocSectionBlock id="wallet" title="Wallet">
+                <p>
+                  Reuno works with any EVM wallet (MetaMask, Rabby, Coinbase Wallet, and others through WalletConnect).
+                  Add Robinhood Chain (chain id {CHAIN.id}) once; the button below asks your wallet to add and switch to it.
+                  If your wallet blocks that, open &ldquo;Add manually&rdquo; and copy each field.
+                </p>
+                <AddChainButton />
+                <p>
+                  Every transaction is built unsigned and signed in your own wallet. Before your wallet opens, Reuno
+                  simulates the transaction on Robinhood Chain and checks you have enough ETH for gas. If you don&apos;t,
+                  &ldquo;Get ETH on Robinhood Chain&rdquo; bridges it from Ethereum, Base, Arbitrum, Optimism, BNB Chain or
+                  Polygon through LI.FI.
+                </p>
+              </DocSectionBlock>
               <DocSectionBlock id="quickstart" title="Quickstart">
                 <p>Get a trial key, then call any model through the OpenAI-compatible endpoint.</p>
                 <CodeBlock code={REST_SNIPPET} label="available at launch" />

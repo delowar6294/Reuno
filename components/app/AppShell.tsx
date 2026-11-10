@@ -5,12 +5,14 @@ import { Tabs, TabPanel } from "@/components/ui/Tabs";
 import { Banner } from "@/components/ui/Banner";
 import { FLAGS } from "@/config/flags";
 import { LAYERS } from "@/data/layers";
+import { SendPanel } from "./SendPanel";
 import { SwapPanel } from "./SwapPanel";
 import { TransferPanel } from "./TransferPanel";
 
 const TABS = [
   { id: "swap", label: "Swap" },
-  { id: "transfer", label: "Transfer" },
+  { id: "send", label: "Send" },
+  { id: "transfer", label: "Private" },
 ];
 
 function TransferComingSoon() {
@@ -40,14 +42,17 @@ export function AppShell() {
   const [tab, setTab] = useState("swap");
   return (
     <div className="mx-auto w-full max-w-[560px]">
-      <Banner>
-        Beta · swaps route through LI.FI and settle publicly on Robinhood Chain. Private transfers open with the Reuno
-        pool.
+      <Banner tone="info">
+        Beta · swaps route through LI.FI (or Uniswap v3 directly) and settle publicly on Robinhood Chain. Private transfers
+        open with the Reuno pool.
       </Banner>
       <div className="panel-highlight mt-6 rounded-xl border border-line-1 bg-grad-card p-5 md:p-8">
         <Tabs items={TABS} value={tab} onChange={setTab} idBase="app" label="Mode" />
         <TabPanel idBase="app" id="swap" active={tab === "swap"} className="pt-6">
           <SwapPanel />
+        </TabPanel>
+        <TabPanel idBase="app" id="send" active={tab === "send"} className="pt-6">
+          <SendPanel />
         </TabPanel>
         <TabPanel idBase="app" id="transfer" active={tab === "transfer"} className="pt-6">
           {FLAGS.privateTransfers ? <TransferPanel /> : <TransferComingSoon />}

@@ -4,6 +4,7 @@ import { Loader2, QrCode, Wallet } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { Modal } from "@/components/ui/Modal";
+import { AddChainButton } from "@/components/wallet/AddChainButton";
 import { CHAIN } from "@/config/chain";
 
 export function ConnectWalletModal({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -26,6 +27,10 @@ export function ConnectWalletModal({ open, onClose }: { open: boolean; onClose: 
 
   return (
     <Modal open={open} onClose={onClose} title="Connect wallet">
+      <div className="mb-6 rounded-sm border border-line-1 bg-surface-1 p-3">
+        <p className="mb-3 text-xs text-ink-3">New to Robinhood Chain? Add the network first.</p>
+        <AddChainButton />
+      </div>
       <p className="text-sm text-ink-2">
         Reuno never asks for or holds a private key. Your wallet signs every transaction on {CHAIN.name} (chain id{" "}
         {CHAIN.id}).
@@ -40,7 +45,7 @@ export function ConnectWalletModal({ open, onClose }: { open: boolean; onClose: 
               <button
                 type="button"
                 disabled={unavailable || isPending}
-                onClick={() => connect({ connector: c, chainId: CHAIN.id })}
+                onClick={() => connect({ connector: c })}
                 className="flex h-14 w-full items-center gap-3 rounded-md border border-line-2 bg-surface-2 px-4 text-left text-ink-1 transition-colors duration-[180ms] hover:border-line-3 hover:bg-surface-3 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span className="flex h-8 w-8 items-center justify-center rounded-sm bg-surface-3 text-brand-300">

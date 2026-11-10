@@ -3,6 +3,8 @@ import { Container } from "@/components/layout/Container";
 import { MonoLabel } from "@/components/ui/MonoLabel";
 import { AppShell } from "@/components/app/AppShell";
 import { Web3Provider } from "@/components/providers/Web3Provider";
+import { AddChainButton } from "@/components/wallet/AddChainButton";
+import { ConnectButton } from "@/components/wallet/ConnectButton";
 
 export const metadata: Metadata = {
   title: "Open app",
@@ -16,11 +18,17 @@ export default function AppPage() {
         <div className="absolute inset-0 bg-grad-glow" />
       </div>
       <Container className="relative">
-        <div className="mb-10 flex flex-col items-center gap-4 text-center">
-          <MonoLabel>reuno app · beta</MonoLabel>
-          <h1 className="text-display-l text-ink-1">Trade stock tokens from your wallet.</h1>
-        </div>
         <Web3Provider>
+          <div className="mx-auto mb-10 flex w-full max-w-[560px] flex-col gap-6">
+            <div className="flex items-center justify-between gap-3">
+              <MonoLabel>reuno app · beta</MonoLabel>
+              <ConnectButton />
+            </div>
+            <h1 className="text-display-l text-center text-ink-1">Trade stock tokens from your wallet.</h1>
+            <div className="flex justify-center">
+              <AddChainButton className="items-center" />
+            </div>
+          </div>
           <AppShell />
         </Web3Provider>
       </Container>

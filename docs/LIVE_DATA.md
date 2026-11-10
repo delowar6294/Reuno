@@ -10,7 +10,7 @@ Every number on the `/stocks` hero, the stocks grid, the stock ticker, the model
 | Public RPC | `https://rpc.mainnet.chain.robinhood.com/` | https://docs.robinhood.com/chain/add-network-to-wallet |
 | Explorer | `https://robinhoodchain.blockscout.com` | same pages |
 
-`eth_chainId` on the RPC returns `0x1237` (4663).
+Re-verified 2026-11-11: `eth_chainId` returns `0x1237` (4663), `eth_blockNumber` returned `0x6a14b33`, `eth_gasPrice` ≈ 0.02 gwei, `eth_maxPriorityFeePerGas` = 0. Native currency ETH, 18 decimals. Network name "Robinhood Chain". All of this lives in `config/chain.ts` only.
 
 ## Token addresses — `config/tokens.ts`
 
@@ -53,7 +53,30 @@ WETH `0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73` and USDG `0x5fc5360D0400a0Fd4f
 - `GET https://li.quest/v1/quote?fromChain=4663&toChain=4663&fromToken=…&toToken=…&fromAmount=…&fromAddress=…`
 - Sample buy (0.01 ETH → NVDA): `tool: sushiswap`, `estimate.toAmount: 120416666611529904`, `feeCosts: [LIFI Fixed Fee $0.0504]`, `gasCosts: [$0.0234]`, `approvalAddress: 0xB477751B76CF82d00a686A1232f5fCD772414Af3`, `transactionRequest.chainId: 4663`.
 - Sell quotes and GLD quotes also return routes (GLD is not in LI.FI's token list but routes anyway).
+- `slippage=0.005` is sent explicitly (0.5%).
+- Route coverage checked 2026-11-11 with `/v1/chains`, `/v1/tokens?chains=4663` (341 tokens; GLD and HIMS are not listed but still route) and a buy + sell `/v1/quote` per token: **all 18 tokens route both ways** (SushiSwap Aggregator, Fly, Nordstern Finance).
 - Swaps settle publicly on Robinhood Chain. They do not go through Reuno's privacy layers, which are not live yet, and the UI says so.
+
+## Direct DEX fallback — Uniswap v3
+
+Used only when LI.FI returns no route or is down. Every highest-liquidity stock-token pool on DexScreener has `dexId: "uniswap"`.
+
+| Contract | Address | Source |
+|---|---|---|
+| UniswapV3Factory | `0x1f7d7550b1b028f7571e69a784071f0205fd2efa` | https://docs.uniswap.org/docs/protocols/v3/deployments/v3-robinhood-chain-deployments |
+| QuoterV2 | `0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7` | same page; also `ROBINHOOD_ADDRESSES` in Uniswap/sdks `sdk-core/src/addresses.ts` |
+| SwapRouter02 | `0xcaf681a66d020601342297493863e78c959e5cb2` | same |
+
+Each has bytecode (`eth_getCode` on the official RPC). The fallback probes fee tiers 0.01/0.05/0.3/1% with `QuoterV2.quoteExactInputSingle` (WETH ↔ token), picks the best output, applies 0.5% slippage and a 10-minute deadline, and builds `SwapRouter02.multicall(deadline, …)` (sells end with `unwrapWETH9`). Probe results 2026-11-11: a quoting v3 WETH pool exists for NVDA, TSLA, AAPL, GOOGL, GLD, QQQ, AMD, SPY, SLV, COST, CRCL, HIMS, MU, SGOV, TTWO. **MSFT and AMZN** (v3 pools exist but cannot quote) and **USO** (no v3 WETH pool) would show "No route for TICKER yet" if LI.FI ever had no route.
+
+## Gas bridge — LI.FI
+
+- `GET /v1/quote?fromChain=<1|8453|42161|10|56|137>&toChain=4663&fromToken=0x0…0&toToken=0x0…0&…` returned a route from all six source chains (Layerswap or Relay), with `transactionRequest.chainId` = the source chain.
+- `GET /v1/status?txHash=…&fromChain=…&toChain=4663` → `status` / `substatus` / `receiving.txHash`. **Caveat:** for a hash it has not indexed, LI.FI can answer with an unrelated transfer; the server only trusts a response whose `sending.txHash` matches.
+
+## Gas and simulation
+
+Before any wallet prompt the browser runs, against Robinhood Chain: `getBalance`, `estimateFeesPerGas` (EIP-1559), `simulateContract` / `call`, `estimateGas` (+20%). See `lib/wallet/tx.ts`.
 
 ## Models — OpenRouter
 

@@ -9,6 +9,7 @@ import { RollingDigits } from "@/components/ui/RollingDigits";
 import { Sparkline } from "@/components/ui/Sparkline";
 import { StatusDot } from "@/components/ui/StatusDot";
 import { TradePanel } from "@/components/trade/TradePanel";
+import { AddTokenButton } from "@/components/wallet/AddTokenButton";
 import { CHAIN, explorerTokenUrl } from "@/config/chain";
 import type { LiveQuote, TradeSide } from "@/lib/market-types";
 import { changeWords, formatCompactUsd, formatPct, formatUsd, shortAddress } from "@/lib/format";
@@ -253,7 +254,10 @@ export function LiveQuoteCard() {
               <motion.div key={q.ticker} className="flex min-w-0 items-center gap-3" {...swap}>
                 <Avatar ticker={q.ticker} />
                 <div className="flex min-w-0 flex-col">
-                  <span className="font-display text-2xl font-semibold leading-tight text-ink-1">{q.ticker}</span>
+                  <span className="flex items-center gap-2">
+                    <span className="font-display text-2xl font-semibold leading-tight text-ink-1">{q.ticker}</span>
+                    <AddTokenButton address={q.address} symbol={q.ticker} />
+                  </span>
                   <span className="truncate text-sm text-ink-3">
                     {q.name} · {q.kind}
                   </span>

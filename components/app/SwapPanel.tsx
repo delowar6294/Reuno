@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { TradePanel } from "@/components/trade/TradePanel";
+import { AddTokenButton } from "@/components/wallet/AddTokenButton";
 import { STOCK_TOKENS } from "@/config/tokens";
 import type { TradeSide } from "@/lib/market-types";
 import { formatPct, formatUsd } from "@/lib/format";
@@ -15,19 +16,24 @@ export function SwapPanel() {
   const [amount, setAmount] = useState("50");
   const { data } = usePrices();
   const live = data?.prices.find((p) => p.ticker === ticker);
+  const token = STOCK_TOKENS.find((t) => t.ticker === ticker)!;
 
   return (
     <div className="flex flex-col gap-6">
       <Field label="stock token" htmlFor="swap-token" hint={side === "buy" ? "Paid with ETH from your wallet." : "Sold for ETH to your wallet."}>
-        <TokenSelect
-          id="swap-token"
-          value={ticker}
-          onChange={(t) => {
-            setTicker(t);
-            setAmount("50");
-          }}
-          options={STOCK_TOKENS.map((t) => t.ticker)}
-        />
+        <div className="flex items-center gap-2">
+          <TokenSelect
+            id="swap-token"
+            value={ticker}
+            onChange={(t) => {
+              setTicker(t);
+              setAmount("50");
+            }}
+            options={STOCK_TOKENS.map((t) => t.ticker)}
+            className="flex-1"
+          />
+          <AddTokenButton address={token.address} symbol={token.ticker} />
+        </div>
       </Field>
 
       <div className="flex items-center justify-between rounded-sm border border-line-1 bg-surface-1 px-4 py-3 text-sm">

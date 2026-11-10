@@ -8,7 +8,7 @@ import { StocksGrid } from "@/components/pages/StocksGrid";
 import { LiveQuoteCard } from "@/components/stocks/LiveQuoteCard";
 import { LiveStats } from "@/components/stocks/LiveStats";
 import { Web3Provider } from "@/components/providers/Web3Provider";
-import { US_PERSONS_NOTICE } from "@/data/stocks";
+import { STOCK_TOKEN_NOTICE } from "@/data/stocks";
 
 export const metadata: Metadata = {
   title: "Stocks",
@@ -34,8 +34,12 @@ export default function StocksPage() {
               Trade from an agent
             </ModalButton>
           </div>
-          <LiveStats />
-          <Banner className="max-w-[640px]">{US_PERSONS_NOTICE}</Banner>
+          <div>
+            <LiveStats />
+            <Banner tone="info" className="mt-6 max-w-[62ch]">
+              {STOCK_TOKEN_NOTICE}
+            </Banner>
+          </div>
         </div>
       </PageHero>
       <Section tone="even" className="pt-12 md:pt-16">

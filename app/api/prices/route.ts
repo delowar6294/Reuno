@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getLivePrices } from "@/lib/server/market";
+import { getEthPriceUsd, getLivePrices } from "@/lib/server/market";
 
 export const runtime = "nodejs";
 // Always run on request; freshness is controlled by the in-memory caches in lib/server/market.ts
@@ -8,11 +8,11 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const data = await getLivePrices();
+    const [data, ethUsd] = await Promise.all([getLivePrices(), getEthPriceUsd().catch(() => null)]);
     if (data.prices.length === 0) {
       return NextResponse.json({ error: "No live prices available" }, { status: 503 });
     }
-    return NextResponse.json(data, {
+    return NextResponse.json({ ...data, ethUsd }, {
       headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=30" },
     });
   } catch (err) {

@@ -53,3 +53,21 @@ export function changeWords(value: number): string {
   if (value < 0) return `down ${Math.abs(value).toFixed(2)} percent`;
   return "unchanged";
 }
+
+/** ETH amount from wei, rounded UP to `sig` significant digits (so "about X" never understates a requirement). */
+export function formatEthCeil(wei: bigint, sig = 3): string {
+  if (wei <= BigInt(0)) return "0";
+  const n = Number(wei) / 1e18;
+  const mag = Math.floor(Math.log10(n));
+  const factor = Math.pow(10, sig - 1 - mag);
+  const up = Math.ceil(n * factor - 1e-9) / factor;
+  return up.toLocaleString("en-US", { maximumFractionDigits: Math.max(0, sig - 1 - mag), useGrouping: false });
+}
+
+/** ETH amount from wei for display (4 significant digits below 1, 4 decimals above). */
+export function formatEth(wei: bigint): string {
+  const n = Number(wei) / 1e18;
+  if (n === 0) return "0";
+  if (n >= 1) return n.toLocaleString("en-US", { maximumFractionDigits: 4 });
+  return n.toLocaleString("en-US", { maximumSignificantDigits: 4 });
+}

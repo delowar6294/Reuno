@@ -1,7 +1,7 @@
 import "server-only";
 import { z } from "zod";
 import { CHAIN } from "@/config/chain";
-import { FEATURED_TICKERS, STOCK_TOKENS, type StockTokenConfig } from "@/config/tokens";
+import { FEATURED_TICKERS, STOCK_TOKENS, WETH_ADDRESS, type StockTokenConfig } from "@/config/tokens";
 import type { LivePrice, LiveQuote } from "@/lib/market-types";
 import { cached, fetchJson, lastGood } from "./http";
 
@@ -70,6 +70,19 @@ export async function getLivePrices(): Promise<{ prices: LivePrice[]; updatedAt:
     }
     recordSnapshots(prices);
     return { prices, updatedAt: new Date().toISOString() };
+  });
+}
+
+/** Live ETH price in USD from the highest-liquidity WETH-base pool on Robinhood Chain (DexScreener). */
+export async function getEthPriceUsd(): Promise<number> {
+  return cached("eth-price", 30_000, async () => {
+    const pairs = await dexPairs([WETH_ADDRESS]);
+    const best = pairs
+      .filter((p) => p.baseToken.address.toLowerCase() === WETH_ADDRESS.toLowerCase())
+      .filter((p) => Number(p.priceUsd) > 0)
+      .sort((a, b) => (b.liquidity?.usd ?? 0) - (a.liquidity?.usd ?? 0))[0];
+    if (!best) throw new Error("dexscreener: no live WETH pool");
+    return Number(best.priceUsd);
   });
 }
 
