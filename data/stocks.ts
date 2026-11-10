@@ -23,5 +23,19 @@ export const STOCKS: StockToken[] = [
   { ticker: "TTWO", kind: "stock" },
 ];
 
+/** Tickers cycled in the /stocks hero preview card. Labels are descriptive only. */
+export const HERO_TICKERS = [
+  { ticker: "TSLA", label: "stock token" },
+  { ticker: "NVDA", label: "stock token" },
+  { ticker: "SPY", label: "ETF token" },
+  { ticker: "GLD", label: "ETF token" },
+];
+
+export const STOCK_FACTS = [
+  { value: "60+", label: "stock tokens & ETFs" },
+  { value: "4663", label: "robinhood chain id" },
+  { value: "5", label: "privacy layers" },
+];
+
 export const US_PERSONS_NOTICE =
   "Stock tokens are not available to US persons and are restricted in several other countries. Reuno shows data and builds transactions; it does not sell stock tokens.";
