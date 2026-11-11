@@ -7,7 +7,8 @@ import { ModalButton } from "@/components/modals/ModalButton";
 import { Button } from "@/components/ui/Button";
 import { LetterAvatar } from "@/components/ui/LetterAvatar";
 import { MonoLabel } from "@/components/ui/MonoLabel";
-import { StatusDot } from "@/components/ui/StatusDot";
+import { ContractAddress } from "@/components/ui/ContractAddress";
+import { REUNO_TOKEN_ADDRESS } from "@/config/reuno-token";
 import { LAYERS } from "@/data/layers";
 import { SUPPORTING_LINE } from "@/data/site";
 import type { LiveQuote } from "@/lib/market-types";
@@ -183,10 +184,7 @@ export function ParticleHero() {
           {/* Right column: headline and actions (bottom-aligned on phones, centred from md up) */}
           <div className="pointer-events-auto absolute bottom-10 left-0 right-0 top-[96px] flex flex-col overflow-y-auto [scrollbar-width:none] md:left-auto md:w-[420px] lg:bottom-28 [&::-webkit-scrollbar]:hidden">
             <div className="mt-auto flex flex-col gap-6 md:my-auto">
-              <span className="text-mono-label inline-flex items-center gap-2 text-ink-2">
-                <StatusDot tone="ok" />
-                live on robinhood chain · beta
-              </span>
+              <ContractAddress address={REUNO_TOKEN_ADDRESS} className="-my-1.5 self-start" />
               <h1 id="hero-title" className="text-display-l text-ink-1">
                 Private rails for people and their <span className="text-grad-brand">agents.</span>
               </h1>
@@ -216,7 +214,6 @@ export function ParticleHero() {
                   ))}
                 </span>
               </a>
-              <span className="text-mono-label normal-case text-ink-3">$REUNO · CA coming soon</span>
             </div>
           </div>
         </div>
