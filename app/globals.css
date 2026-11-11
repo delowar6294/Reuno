@@ -109,6 +109,10 @@ h1, h2, h3 { text-wrap: balance; }
   border-radius: 6px;
 }
 
+/* Home page: sections let the fixed particle backdrop show through, keeping their tone. */
+.home-translucent > section.bg-bg-0 { background-color: color-mix(in srgb, var(--bg-0) 72%, transparent); }
+.home-translucent > section.bg-bg-1 { background-color: color-mix(in srgb, var(--bg-1) 80%, transparent); }
+
 @layer components {
   .text-display-xl {
     font-family: var(--font-display), system-ui, sans-serif;

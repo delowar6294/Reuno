@@ -1,4 +1,5 @@
-import { Hero } from "@/components/home/Hero";
+import { ParticleBackdrop } from "@/components/home/ParticleBackdrop";
+import { ParticleHero } from "@/components/home/ParticleHero";
 import { RecentTransfers } from "@/components/home/RecentTransfers";
 import { LayerOrbit } from "@/components/home/LayerOrbit";
 import { PrivateTrace } from "@/components/home/PrivateTrace";
@@ -24,7 +25,10 @@ export const revalidate = 3600;
 export default function HomePage() {
   return (
     <>
-      <Hero />
+      {/* The particle cloud runs behind the whole home page; sections are translucent (see .home-translucent). */}
+      <ParticleBackdrop />
+      <div className="home-translucent">
+      <ParticleHero />
       {FLAGS.recentTransfers && <RecentTransfers />}
       <LayerOrbit />
       <PrivateTrace />
@@ -43,6 +47,7 @@ export default function HomePage() {
       <PricingTeaser />
       <Faq />
       <FinalCta />
+      </div>
     </>
   );
 }

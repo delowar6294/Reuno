@@ -14,8 +14,16 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://reuno.xyz"
 const LOGO_URL = `${SITE_URL}/brand/reuno-logo.png`;
 
 let warned = false;
+// One config per browser tab: React StrictMode mounts twice in development, and a second WalletConnect
+// core init logs "WalletConnect Core is already initialized".
+let browserConfig: ReturnType<typeof build> | null = null;
 
 export function makeWagmiConfig() {
+  if (typeof window === "undefined") return build();
+  return (browserConfig ??= build());
+}
+
+function build() {
   const browser = typeof window !== "undefined";
   if (!WC_PROJECT_ID && process.env.NODE_ENV !== "production" && browser && !warned) {
     warned = true;
