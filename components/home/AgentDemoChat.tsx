@@ -107,7 +107,7 @@ export function AgentDemoChat() {
                     ["side", "buy"],
                     ["token", "0x322F…3b2d"],
                     ["chain_id", "4663"],
-                    ["route", "LI.FI → 5 layers"],
+                    ["signed by", "your wallet"],
                   ].map(([k, v]) => (
                     <div key={k} className="contents">
                       <dt className="text-ink-3">{k}</dt>

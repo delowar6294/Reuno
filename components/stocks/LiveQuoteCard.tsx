@@ -3,6 +3,8 @@
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from "framer-motion";
 import { Check, Copy, ExternalLink, RotateCw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { formatGwei } from "viem";
+import { useEstimateFeesPerGas } from "wagmi";
 import { Button } from "@/components/ui/Button";
 import { Pill } from "@/components/ui/Pill";
 import { RollingDigits } from "@/components/ui/RollingDigits";
@@ -127,6 +129,9 @@ function BackCard({ q }: { q: LiveQuote }) {
 
 export function LiveQuoteCard() {
   const { data, error, isLoading, mutate, isValidating } = useQuotes();
+  // Live EIP-1559 max fee on Robinhood Chain (shown in the "network fee" row).
+  const fees = useEstimateFeesPerGas({ chainId: CHAIN.id, query: { refetchInterval: 30_000 } });
+  const gasGwei = fees.data?.maxFeePerGas !== undefined ? Number(formatGwei(fees.data.maxFeePerGas)).toLocaleString("en-US", { maximumSignificantDigits: 3 }) : null;
   const reduce = useReducedMotion();
   const quotes = useMemo(() => data?.quotes ?? [], [data]);
 
@@ -308,8 +313,8 @@ export function LiveQuoteCard() {
             </dd>
           </div>
           <div className="flex items-center justify-between gap-4 py-2">
-            <dt className="text-ink-3">route</dt>
-            <dd className="text-ink-1">LI.FI · public swap</dd>
+            <dt className="text-ink-3">network fee</dt>
+            <dd className="text-ink-1">{gasGwei ? `${gasGwei} gwei · live` : "…"}</dd>
           </div>
           <div className="flex items-center justify-between gap-4 py-2">
             <dt className="text-ink-3">signed by</dt>

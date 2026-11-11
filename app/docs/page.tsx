@@ -16,6 +16,7 @@ export const metadata: Metadata = {
 
 const SECTIONS: DocSection[] = [
   { id: "wallet", title: "Wallet" },
+  { id: "swaps", title: "Swaps" },
   { id: "quickstart", title: "Quickstart" },
   { id: "api", title: "API" },
   { id: "mcp", title: "MCP" },
@@ -70,7 +71,20 @@ export default function DocsPage() {
                   Every transaction is built unsigned and signed in your own wallet. Before your wallet opens, Reuno
                   simulates the transaction on Robinhood Chain and checks you have enough ETH for gas. If you don&apos;t,
                   &ldquo;Get ETH on Robinhood Chain&rdquo; bridges it from Ethereum, Base, Arbitrum, Optimism, BNB Chain or
-                  Polygon through LI.FI.
+                  Polygon.
+                </p>
+              </DocSectionBlock>
+              <DocSectionBlock id="swaps" title="Swaps">
+                <p>
+                  Reuno finds the best on-chain liquidity on Robinhood Chain for each trade. Before you sign you see the
+                  rate, what you receive, the minimum you will accept, price impact against the live market price, the
+                  network fee and your slippage setting (0.5% by default; change it with the settings button).
+                </p>
+                <p>
+                  Selling a stock token takes up to three steps the first time: approve the token once (exact amount or
+                  unlimited), a free signature that lets that one swap spend the amount for 30 minutes, then the swap.
+                  Every step is simulated first; if it would fail, you see why and your wallet never opens. Swaps settle
+                  publicly on Robinhood Chain.
                 </p>
               </DocSectionBlock>
               <DocSectionBlock id="quickstart" title="Quickstart">

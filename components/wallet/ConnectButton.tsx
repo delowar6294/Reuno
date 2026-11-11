@@ -8,14 +8,26 @@ import { Button } from "@/components/ui/Button";
 import { ConnectWalletModal } from "@/components/trade/ConnectWalletModal";
 import { CHAIN, explorerAddressUrl } from "@/config/chain";
 import { STOCK_TOKENS } from "@/config/tokens";
+import { WALLETCONNECT_LOGO, walletById, walletByRdns } from "@/config/wallets";
 import { formatEth, formatUsd, shortAddress } from "@/lib/format";
 import { usePrices } from "@/lib/use-market";
 import { addRobinhoodChain } from "@/lib/wallet/addNetwork";
 import type { Eip1193Provider } from "@/lib/wallet/provider";
 import { cn } from "@/lib/cn";
 import { AddChainButton } from "./AddChainButton";
+import { WalletLogo } from "./WalletLogo";
 import { AddTokenButton } from "./AddTokenButton";
 import { useBridge } from "./BridgeProvider";
+
+/** Official logo of the connected wallet: its EIP-6963 icon, else our saved official file. */
+function connectorLogo(c: { id: string; icon?: string; type: string } | undefined): string | undefined {
+  if (!c) return undefined;
+  if (c.icon) return c.icon;
+  if (c.id === "coinbaseWalletSDK") return walletById("coinbase")?.logo;
+  if (c.id === "metaMaskSDK") return walletById("metamask")?.logo;
+  if (c.type === "walletConnect") return WALLETCONNECT_LOGO;
+  return walletByRdns(c.id)?.logo;
+}
 
 /** Wallet button: Connect → Switch to Robinhood Chain → address + ETH balance with an account menu. */
 export function ConnectButton({ className }: { className?: string }) {
@@ -87,7 +99,7 @@ export function ConnectButton({ className }: { className?: string }) {
         onClick={() => setMenuOpen((o) => !o)}
         className="inline-flex h-9 items-center gap-2 rounded-md border border-line-2 bg-surface-1 px-3 text-sm text-ink-1 transition-colors duration-[180ms] hover:border-line-3 hover:bg-surface-2"
       >
-        <span className="h-2 w-2 rounded-full bg-ok" aria-hidden="true" />
+        <WalletLogo src={connectorLogo(connector)} name={connector?.name ?? "Wallet"} size="sm" />
         <span className="mono-num">{shortAddress(address)}</span>
         <span className="mono-num hidden text-ink-3 sm:inline">
           {eth.data ? `${formatEth(eth.data.value)} ETH` : "…"}

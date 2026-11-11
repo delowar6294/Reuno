@@ -41,7 +41,7 @@ const statusFetcher = async (url: string): Promise<BridgeStatus> => {
   return res.json();
 };
 
-/** Bridge native gas from the user's current chain to ETH on Robinhood Chain via LI.FI, signed in their wallet. */
+/** Bridge native gas from the user's current chain to ETH on Robinhood Chain (LI.FI internally), signed in their wallet. */
 export function BridgeModal({
   open,
   onClose,
@@ -184,7 +184,7 @@ export function BridgeModal({
   return (
     <Modal open={open} onClose={onClose} title="Get ETH on Robinhood Chain">
       <p className="text-sm text-ink-2">
-        Bridge your chain&apos;s gas token to ETH on Robinhood Chain through LI.FI. You sign on the source chain; the ETH
+        Bridge your chain&apos;s gas token to ETH on Robinhood Chain. You sign on the source chain; the ETH
         arrives at the same address.
       </p>
 
@@ -211,8 +211,8 @@ export function BridgeModal({
                 failed
                   ? `Bridge failed${status.data?.substatusMessage ? `: ${status.data.substatusMessage}` : ""}`
                   : done
-                    ? `Bridged via ${sent.quote.tool}`
-                    : `Bridging via ${sent.quote.tool}${status.data?.substatusMessage ? ` · ${status.data.substatusMessage}` : "…"}`
+                    ? "Bridged"
+                    : `Bridging${status.data?.substatusMessage ? ` · ${status.data.substatusMessage}` : "…"}`
               }
             />
             <Step state={done ? "done" : failed ? "failed" : "todo"} label="Received on Robinhood Chain">
@@ -291,7 +291,6 @@ export function BridgeModal({
               <Row k="you send" v={`${fmt(quote.fromAmount, quote.fromToken.decimals)} ${quote.fromToken.symbol}`} sub={quote.fromAmountUsd !== null ? formatUsd(quote.fromAmountUsd) : undefined} />
               <Row k="you receive" v={`${fmt(quote.toAmount, quote.toToken.decimals)} ETH`} sub="Robinhood Chain" />
               <Row k="minimum" v={`${fmt(quote.toAmountMin, quote.toToken.decimals)} ETH`} />
-              <Row k="route" v={quote.tool} />
               <Row k="fees" v={formatUsd(quote.feesUsd)} />
               {quote.durationSec !== null && <Row k="est. time" v={quote.durationSec < 90 ? `${quote.durationSec}s` : `${Math.round(quote.durationSec / 60)} min`} />}
             </dl>

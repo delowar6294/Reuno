@@ -89,11 +89,13 @@ export async function getTradeQuote({
   token,
   usd,
   fromAddress,
+  slippageBps = SLIPPAGE_BPS,
 }: {
   side: TradeSide;
   token: StockTokenConfig;
   usd: number;
   fromAddress: `0x${string}`;
+  slippageBps?: number;
 }): Promise<TradeQuote> {
   const fromTokenAddr = side === "buy" ? NATIVE_ETH : token.address;
   const toTokenAddr = side === "buy" ? token.address : NATIVE_ETH;
@@ -113,7 +115,7 @@ export async function getTradeQuote({
     toToken: toTokenAddr,
     fromAmount,
     fromAddress,
-    slippage: String(SLIPPAGE_BPS / 10_000),
+    slippage: String(slippageBps / 10_000),
   });
 
   const q = await fetchLifiQuote(params);
@@ -123,7 +125,7 @@ export async function getTradeQuote({
     side,
     route: "lifi",
     tool: q.toolDetails?.name ?? q.tool,
-    slippageBps: SLIPPAGE_BPS,
+    slippageBps,
     fromToken: { ...q.action.fromToken, address: q.action.fromToken.address as `0x${string}` },
     toToken: { ...q.action.toToken, address: q.action.toToken.address as `0x${string}` },
     fromAmount: q.estimate.fromAmount,
@@ -131,6 +133,7 @@ export async function getTradeQuote({
     toAmountMin: q.estimate.toAmountMin,
     fromAmountUsd: q.estimate.fromAmountUSD ? Number(q.estimate.fromAmountUSD) : null,
     toAmountUsd: q.estimate.toAmountUSD ? Number(q.estimate.toAmountUSD) : null,
+    priceImpactPct: null,
     feesUsd: sumUsd(q.estimate.feeCosts),
     gasUsd: q.estimate.gasCosts?.length ? sumUsd(q.estimate.gasCosts) : null,
     approvalAddress: (q.estimate.approvalAddress as `0x${string}` | undefined) ?? null,

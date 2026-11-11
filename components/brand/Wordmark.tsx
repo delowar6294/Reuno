@@ -24,7 +24,7 @@ export function Lockup({ size = "nav", className }: { size?: "nav" | "footer"; c
       aria-label="Reuno home"
       className={cn("inline-flex items-center gap-[10px] rounded-sm", className)}
     >
-      <Logo size={size === "nav" ? 32 : 40} decorative />
+      <Logo size={size === "nav" ? 32 : 40} decorative priority={size === "nav"} />
       <Wordmark size={size} />
     </Link>
   );

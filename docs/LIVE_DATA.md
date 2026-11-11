@@ -86,3 +86,21 @@ Before any wallet prompt the browser runs, against Robinhood Chain: `getBalance`
 ## Feature flags — `config/flags.ts`
 
 Blocks that need Reuno's own pool, relayers, .onion service or API are off. While off, they render a static explanation with no numbers.
+
+## Swaps — Uniswap v4 first (internal; never named in the UI)
+
+Order per quote: Uniswap v4 → Uniswap v3 (official router) → LI.FI. The first quote that keeps ≥ 97% of the input's market value (price impact ≤ 3%, fees included) wins; otherwise the one that keeps the most value. The chosen source is logged to the browser console in development only.
+
+| Contract (chain 4663) | Address | Source |
+|---|---|---|
+| PoolManager | `0x8366a39cc670b4001a1121b8f6a443a643e40951` | https://docs.uniswap.org/contracts/v4/deployments (Robinhood Chain: 4663) |
+| PositionManager | `0x58daec3116aae6d93017baaea7749052e8a04fa7` | same |
+| Quoter | `0x8dc178efb8111bb0973dd9d722ebeff267c98f94` | same |
+| StateView | `0xf3334192d15450cdd385c8b70e03f9a6bd9e673b` | same |
+| Universal Router 2.1.2 | `0x204FAca1764B154221e35c0d20aBb3c525710498` | same; also `@uniswap/universal-router-sdk` CHAIN_CONFIGS[4663] |
+| Permit2 | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | same |
+| VolatilePair hook (ETH/USDG pool) | `0x987E330F00B79864a07FE81dFaC344D0078ABCC0` | https://docs.uniswap.org/docs/protocols/uniswap-labs-hooks/volatile-pair/deployments |
+
+All have bytecode on 4663 (`eth_getCode`, 2026-11-11). Pool discovery: hookless TOKEN/ETH and TOKEN/USDG pools at fee/tick-spacing 100/1, 500/10, 3000/60, 10000/200, plus the official ETH/USDG VolatilePair pool (dynamic fee `0x800000`, tick spacing 1) as the ETH leg of TOKEN → USDG → ETH. Liquidity via `StateView.getSlot0` / `getLiquidity`, pool keys cached 5 min. Quotes via `Quoter.quoteExactInputSingle` / `quoteExactInput` (path fee is `uint24` on this deployment). Calldata via `@uniswap/v4-sdk` V4Planner (SWAP_EXACT_IN_SINGLE / SWAP_EXACT_IN, SETTLE_ALL, TAKE_ALL; router version 2.1.2 structs with `minHopPriceX36`) and `@uniswap/universal-router-sdk` RoutePlanner (PERMIT2_PERMIT, V4_SWAP). Sells: ERC-20 approve to Permit2 (exact or unlimited) → EIP-712 PermitSingle signature (exact amount, 30 min) → swap.
+
+Verified 2026-11-11 with `eth_call` (no transaction sent): v4 buys of NVDA (single pool), TSLA and MSFT (2 hops via USDG); v4 sells of the same three with a real Permit2 signature from a throwaway key and state overrides for balance/allowance (gas 150k–226k); a corrupted signature reverts.

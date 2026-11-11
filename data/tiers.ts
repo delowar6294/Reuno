@@ -13,7 +13,7 @@ export const CHARGES: ChargeRow[] = [
   { item: "Models", how: "Provider list price, no markup" },
   { item: "Tool calls", how: "Free" },
   { item: "Private transfers", how: "Network + relayer fees" },
-  { item: "Trades / funding", how: "Route fees shown before signing" },
+  { item: "Trades / funding", how: "Network fees shown before signing" },
   { item: "Free allowance", how: "Low-cost models, replies up to 512 tokens" },
   { item: "Holder allowance", how: "$0.40–$15/day, resets 00:00 UTC" },
 ];

@@ -32,12 +32,35 @@ export type PricesResponse = {
 
 export type TradeSide = "buy" | "sell";
 
-export type TradeRoute = "lifi" | "uniswap-v3";
+/** Internal only: which liquidity source built the transaction. Never shown in the UI. */
+export type TradeRoute = "uniswap-v4" | "uniswap-v3" | "lifi";
+
+type Addr = `0x${string}`;
+
+export type V4PoolKey = { currency0: Addr; currency1: Addr; fee: number; tickSpacing: number; hooks: Addr };
+export type V4PathKey = { intermediateCurrency: Addr; fee: number; tickSpacing: number; hooks: Addr; hookData: `0x${string}` };
+
+/** Serializable v4 swap plan (amounts as decimal strings) so the server can re-encode it with a Permit2 signature. */
+export type V4Plan = (
+  | { kind: "single"; poolKey: V4PoolKey; zeroForOne: boolean }
+  | { kind: "path"; currencyIn: Addr; path: V4PathKey[] }
+) & { amountIn: string; amountOutMin: string; deadline: number };
+
+/** EIP-712 PermitSingle for Permit2 (values as decimal strings). */
+export type PermitRequest = {
+  domain: { name: "Permit2"; chainId: number; verifyingContract: Addr };
+  values: {
+    details: { token: Addr; amount: string; expiration: string; nonce: string };
+    spender: Addr;
+    sigDeadline: string;
+  };
+};
 
 export type TradeQuote = {
   side: TradeSide;
-  /** Which router built the transaction. */
+  /** Internal: which liquidity source built the transaction (logged in development only). */
   route: TradeRoute;
+  /** Internal description of the route (logged in development only). */
   tool: string;
   /** Slippage tolerance applied to toAmountMin, in basis points. */
   slippageBps: number;
@@ -46,19 +69,26 @@ export type TradeQuote = {
   fromAmount: string;
   toAmount: string;
   toAmountMin: string;
+  /** Market value of each side at live prices (DexScreener), filled by the quote route. */
   fromAmountUsd: number | null;
   toAmountUsd: number | null;
+  /** (value in − value out) / value in at live market prices, in percent; includes pool fees. */
+  priceImpactPct: number | null;
   feesUsd: number;
   /** Router's own gas estimate in USD, when it provides one. The wallet preflight estimates gas again on-chain. */
   gasUsd: number | null;
   approvalAddress: `0x${string}` | null;
+  /** Null while a Permit2 signature is still needed (v4 sells); built by /api/trade-build after signing. */
   transactionRequest: {
     to: `0x${string}`;
     data: `0x${string}`;
     value: string;
     gasLimit: string | null;
     chainId: number;
-  };
+  } | null;
+  /** Permit2 signature request (v4 sells without a live Permit2 allowance). */
+  permit?: PermitRequest | null;
+  v4Plan?: V4Plan;
   fetchedAt: string;
 };
 

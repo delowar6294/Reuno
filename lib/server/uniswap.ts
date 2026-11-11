@@ -48,11 +48,13 @@ export async function getDirectQuote({
   token,
   usd,
   fromAddress,
+  slippageBps = DIRECT_SLIPPAGE_BPS,
 }: {
   side: TradeSide;
   token: StockTokenConfig;
   usd: number;
   fromAddress: `0x${string}`;
+  slippageBps?: number;
 }): Promise<TradeQuote> {
   const [ethUsd, prices, tokenDecimals] = await Promise.all([
     getEthPriceUsd(),
@@ -73,7 +75,7 @@ export async function getDirectQuote({
   const q = await bestQuote(tokenIn, tokenOut, amountIn);
   if (!q) throw new NoDirectRouteError(`No Uniswap v3 WETH pool quotes ${token.ticker}`);
 
-  const amountOutMin = (q.amountOut * BigInt(10_000 - DIRECT_SLIPPAGE_BPS)) / 10_000n;
+  const amountOutMin = (q.amountOut * BigInt(10_000 - slippageBps)) / 10_000n;
   const deadline = BigInt(Math.floor(Date.now() / 1000) + DIRECT_DEADLINE_SEC);
 
   const swap = encodeFunctionData({
@@ -104,7 +106,7 @@ export async function getDirectQuote({
     side,
     route: "uniswap-v3",
     tool: `Uniswap v3 · ${q.fee / 10_000}% pool`,
-    slippageBps: DIRECT_SLIPPAGE_BPS,
+    slippageBps,
     fromToken: buy ? eth : tok,
     toToken: buy ? tok : eth,
     fromAmount: amountIn.toString(),
@@ -112,6 +114,7 @@ export async function getDirectQuote({
     toAmountMin: amountOutMin.toString(),
     fromAmountUsd: usd,
     toAmountUsd: outUsd,
+    priceImpactPct: null,
     feesUsd: (usd * q.fee) / 1_000_000,
     gasUsd: null,
     approvalAddress: buy ? null : UNISWAP_V3.swapRouter02,

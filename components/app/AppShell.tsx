@@ -43,8 +43,7 @@ export function AppShell() {
   return (
     <div className="mx-auto w-full max-w-[560px]">
       <Banner tone="info">
-        Beta · swaps route through LI.FI (or Uniswap v3 directly) and settle publicly on Robinhood Chain. Private transfers
-        open with the Reuno pool.
+        Beta · swaps settle publicly on Robinhood Chain. Private transfers open with the Reuno pool.
       </Banner>
       <div className="panel-highlight mt-6 rounded-xl border border-line-1 bg-grad-card p-5 md:p-8">
         <Tabs items={TABS} value={tab} onChange={setTab} idBase="app" label="Mode" />

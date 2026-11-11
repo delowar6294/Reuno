@@ -33,3 +33,16 @@ Reproduced on Robinhood Chain mainnet (chain id 4663) on 2026-11-11, driving the
 - WalletConnect (no project id configured yet).
 - The direct Uniswap v3 **sell** calldata (`multicall(deadline, [exactInputSingle → router, unwrapWETH9])`) was not simulated: that needs a holder with an allowance to the router. Buys were simulated.
 - The bridge status tracker against a real bridge transaction (the endpoint and the mismatch guard were tested).
+
+## Wallets and swap routing (2026-11-11)
+
+| # | Found | Where | Fix |
+|---|---|---|---|
+| 11 | An installed MetaMask or Coinbase Wallet extension never appeared as "installed": wagmi drops EIP-6963 announcements whose rdns matches an SDK connector (`metaMask()` claims `io.metamask`, `coinbaseWallet()` claims `com.coinbase.wallet`). | `components/trade/ConnectWalletModal.tsx` | Our own EIP-6963 listener (`lib/wallet/eip6963.ts`); each installed wallet connects through the exact provider it announced, with its own icon. |
+| 12 | `coinbaseWallet` connector's legacy path imports `cbw-sdk` (not installed) → build would fail. | `next.config.mjs` | Alias `cbw-sdk` to `false`; v4 SDK (`@coinbase/wallet-sdk`) is used. |
+| 13 | WalletConnect explorer API needs a project id (HTTP 400 without one), so logos could not come from it. | `config/wallets.ts` | Logos downloaded from each wallet's own site / Coinbase's SDK / WalletConnect's GitHub assets; mobile deep links look up the explorer at runtime once `NEXT_PUBLIC_WC_PROJECT_ID` is set. |
+| 14 | Universal Router 2.1.x swap structs carry an extra `minHopPriceX36` field; hand-encoding the older layout would revert. | `lib/server/uniswapV4.ts` | Encoded with the official SDKs at router version 2.1.2; verified by simulation. |
+| 15 | Several hookless v4 pools are nearly empty (e.g. a quote of 0.000001 GOOGL for 0.001 ETH). | `app/api/trade-quote/route.ts` | Best quote across pools, then a market-value check: a source is accepted only if price impact ≤ 3%, otherwise the next source is tried. |
+| 16 | The previous swap UI named providers ("li.fi quote · …", "LI.FI · public swap", bridge "via Layerswap"). | trade panel, quote card, banner, bridge dialog | Removed; rows now show rate, you receive (est.), minimum received, price impact, network fee (ETH + USD), slippage. |
+
+Not verified: a real MetaMask / Coinbase extension (tested with an EIP-6963 test wallet), the Coinbase sign-in popup (the browser pane blocks popups; the SDK loaded and waited for it), WalletConnect pairing with a phone (no project id configured), and the Permit2 signature step in the UI (it needs a real on-chain approval first; the full approve → sign → swap path was verified by on-chain simulation instead).
