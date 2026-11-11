@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
-import { Banner } from "@/components/ui/Banner";
 import { Button } from "@/components/ui/Button";
 import { ModalButton } from "@/components/modals/ModalButton";
 import { StocksGrid } from "@/components/pages/StocksGrid";
 import { LiveQuoteCard } from "@/components/stocks/LiveQuoteCard";
 import { LiveStats } from "@/components/stocks/LiveStats";
 import { Web3Provider } from "@/components/providers/Web3Provider";
-import { STOCK_TOKEN_NOTICE } from "@/data/stocks";
 
 export const metadata: Metadata = {
   title: "Stocks",
@@ -36,9 +34,6 @@ export default function StocksPage() {
           </div>
           <div>
             <LiveStats />
-            <Banner tone="info" className="mt-6 max-w-[62ch]">
-              {STOCK_TOKEN_NOTICE}
-            </Banner>
           </div>
         </div>
       </PageHero>
