@@ -1,11 +1,8 @@
 import Link from "next/link";
 import { Lockup } from "@/components/brand/Wordmark";
-import { StatusDot } from "@/components/ui/StatusDot";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { XLink } from "@/components/ui/XLink";
-import { AddChainButton } from "@/components/wallet/AddChainButton";
 import { FOOTER_COLUMNS } from "@/data/nav";
-import { FLAGS } from "@/config/flags";
 import { Container } from "./Container";
 import { ComplianceRow } from "./ComplianceRow";
 
@@ -22,7 +19,6 @@ export function Footer() {
             <p className="max-w-[32ch] text-ink-2">Private rails for people and their agents.</p>
             <ComplianceRow />
             <XLink label className="self-start border border-line-1" />
-            <AddChainButton className="mt-2" />
           </div>
 
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:col-span-8">
@@ -55,18 +51,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-line-1 pt-8 md:flex-row md:items-center md:justify-between">
+        <div className="mt-14 border-t border-line-1 pt-8">
           <span className="text-sm text-ink-3">© 2026 Reuno</span>
-          <span className="text-mono-label text-ink-3">also available as a .onion service</span>
-          {/* Status line renders only when FLAGS.statusLine is on — wire to a status page first. */}
-          {FLAGS.statusLine ? (
-            <span className="text-mono-label inline-flex items-center gap-2 text-ink-2">
-              <StatusDot tone="ok" />
-              all systems normal · demo
-            </span>
-          ) : (
-            <span className="text-mono-label text-ink-3">robinhood chain · id 4663</span>
-          )}
         </div>
 
         <p className="mt-6 max-w-[110ch] text-xs leading-relaxed text-ink-3">
