@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Lockup } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/Button";
 import { ModalButton } from "@/components/modals/ModalButton";
+import { XLink } from "@/components/ui/XLink";
 import { NAV_LINKS } from "@/data/nav";
 import { cn } from "@/lib/cn";
 import { MobileMenu } from "./MobileMenu";
@@ -55,6 +56,7 @@ export function Navbar() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <XLink className="hidden sm:inline-flex" />
           <ModalButton modal="tor" variant="secondary" size="sm" className="hidden lg:inline-flex">
             Open in Tor
           </ModalButton>

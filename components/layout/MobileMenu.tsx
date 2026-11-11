@@ -8,6 +8,7 @@ import { createPortal } from "react-dom";
 import { Lockup } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/Button";
 import { useModal } from "@/components/modals/ModalProvider";
+import { XLink } from "@/components/ui/XLink";
 import { NAV_LINKS } from "@/data/nav";
 
 const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -111,6 +112,7 @@ export function MobileMenu() {
               </ul>
             </nav>
             <div className="flex flex-col gap-3 p-4 pb-8 sm:px-6">
+              <XLink label className="self-start -ml-3" />
               <Button
                 variant="secondary"
                 size="lg"

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Lockup } from "@/components/brand/Wordmark";
 import { StatusDot } from "@/components/ui/StatusDot";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { XLink } from "@/components/ui/XLink";
 import { AddChainButton } from "@/components/wallet/AddChainButton";
 import { FOOTER_COLUMNS } from "@/data/nav";
 import { FLAGS } from "@/config/flags";
@@ -20,6 +21,7 @@ export function Footer() {
             <Lockup size="footer" />
             <p className="max-w-[32ch] text-ink-2">Private rails for people and their agents.</p>
             <ComplianceRow />
+            <XLink label className="self-start border border-line-1" />
             <AddChainButton className="mt-2" />
           </div>
 
